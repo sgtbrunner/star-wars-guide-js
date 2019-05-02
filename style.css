@@ -1,0 +1,111 @@
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	margin: auto 0;
+    font-family: Arial;
+}
+
+/* LOADS FONT FROM SERVER ROOT DIRECTORY */
+@font-face {
+    font-family: 'Star Jedi';
+    src: url(star-jedi_[allfont.net].ttf);
+}
+
+#temp-page {
+    max-width: 100%;
+    max-height: 100vh;
+    height: 100%;
+}
+
+#main-page {
+	display: none;
+}
+
+#cover-image {
+    max-width: 100%;
+    max-height: 100vh;
+    height: auto;
+}
+
+#grid-container {
+	background-image: url("img/bg.jpg");
+	background-size: repeat;
+}
+
+#cardlist {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+}
+
+.loader {
+	text-align: center;
+	vertical-align: center;
+	font-family: 'Star Jedi';
+	font-size: 10vh;
+	padding: 25vh 10vh;
+}
+
+/*SETS FADE IN & FADE OUT ANIMATION - EXTRACTED FROM THE WEB*/
+@keyframes flickerAnimation {
+  0%   { opacity:1; }
+  50%  { opacity:0; }
+  100% { opacity:1; }
+}
+@-o-keyframes flickerAnimation{
+  0%   { opacity:1; }
+  50%  { opacity:0; }
+  100% { opacity:1; }
+}
+@-moz-keyframes flickerAnimation{
+  0%   { opacity:1; }
+  50%  { opacity:0; }
+  100% { opacity:1; }
+}
+@-webkit-keyframes flickerAnimation{
+  0%   { opacity:1; }
+  50%  { opacity:0; }
+  100% { opacity:1; }
+}
+.animate-flicker {
+   -webkit-animation: flickerAnimation 1s infinite;
+   -moz-animation: flickerAnimation 1s infinite;
+   -o-animation: flickerAnimation 1s infinite;
+    animation: flickerAnimation 1s infinite;
+}
+
+.cover-container {
+	z-index: 1;
+	background-color: black;
+    text-align: center;
+    border-bottom: 2px solid white;
+}
+
+.card {
+	border: 3px solid goldenrod;
+	margin: 15px 5px;
+	display: flex;
+	flex-direction: column;
+	user-select: none;
+}
+
+.card:hover {
+	transform: scale(1.03);
+    box-shadow:rgba(255,255,255,2) 0px 5px 15px, inset rgba(255,255,255,2) 0px -10px 20px;
+	cursor: pointer;
+}
+
+.picture {
+	width: 180px;
+}
+
+.title {
+	background-color: white;
+	padding: 5px;
+	text-align: center;
+	font-family: Verdana;
+	font-size: 15px;
+	font-weight: bold;
+}
