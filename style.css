@@ -84,6 +84,8 @@ body {
 }
 
 .card {
+	width: 200px;
+	height: auto;
 	border: 3px solid goldenrod;
 	margin: 15px 5px;
 	display: flex;
@@ -98,7 +100,8 @@ body {
 }
 
 .picture {
-	width: 180px;
+	width: 200px;
+	height: auto;
 }
 
 .title {
