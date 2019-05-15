@@ -1,10 +1,12 @@
-// ********************************************************************************************************
-// METHOD 1:
-// ******************************************************************************************************
 // DOM SELECTORS
-temppage = document.getElementsByTagName('div')[0];
-mainpage = document.getElementById('main-page');
-ul = document.getElementById('cardlist');
+const temppage = document.getElementsByTagName('div')[0];
+const mainpage = document.getElementById('main-page');
+const ul = document.getElementById('cardlist');
+const modal = document.getElementById('myModal');
+const modalcontainer = document.getElementsByClassName("grid-container")[0].children;
+const modalload = document.getElementsByClassName("modal-load")[0];
+const modalcontent = document.getElementsByClassName("modal-content")[0];
+const span = document.getElementsByClassName('close')[0];
 
 // APIs
 urls = [
@@ -20,6 +22,18 @@ urls = [
 ]
 
 // FUN FUN FUNCTIONS
+
+// Gets all the characters from different pages and concat them in a single array
+const getCharacters = async function() {
+	try {
+		await getData();			
+		return characters = concatArray(pages);
+	} catch (err) {
+   		console.log('ooooooops', err);		
+	}
+}
+
+// Fetches all the character data information from API server and store it in pages as it's defined on SWAPI
 const getData = async function() {
   try {
 	pages = await Promise.all(urls.map(async function(url) {
@@ -31,21 +45,13 @@ const getData = async function() {
   }
 }
 
+// Function for concating information in an array
 const concatArray = (array) => {
 	let people = [];
 	for( i=0 ; i<array.length ; i++ ) {
 		people = people.concat(array[i].results);
 	}
 	return people;
-}
-
-const getCharacters = async function() {
-	try {
-		await getData();			
-		return characters = concatArray(pages);
-	} catch (err) {
-   		console.log('ooooooops', err);		
-	}
 }
 
 // ** Needed to fix the order which characters are displayed, repositioning Padmé Amidala and Ratts Tyerell in
@@ -62,125 +68,105 @@ const fixOrder = (array) => {
 // 	which can be bypassed with the following function
 const getImage = (index) => {
 	if (index < 16) {
-		return 'https://starwars-visualguide.com/assets/img/characters/'+(i+1)+'.jpg';
+		return `https://starwars-visualguide.com/assets/img/characters/${(index+1)}.jpg`;
 	} else {
-		return 'https://starwars-visualguide.com/assets/img/characters/'+(i+2)+'.jpg';
+		return `https://starwars-visualguide.com/assets/img/characters/${(index+2)}.jpg`;
 	}
 }
 
- //** This function switches the initial display between "Loading" and "Main Content" pages
-const changedisplay = () => {
-	temppage.style.display = 'none';
-	mainpage.style.display ='initial';
+// Creates modal with character information onclick
+const openModal = async function(event) {
+	modal.style.display = "block";
+	const index = parseInt(event.path[1].id);
+	const [name, portrait, birth, gender, species, homeworld, films ] = 
+		  [modalcontainer[0], modalcontainer[1], modalcontainer[2], modalcontainer[3], modalcontainer[4], modalcontainer[5], modalcontainer[6]];
+	name.innerHTML = characters[index].name;
+	portrait.src = getImage(index);
+	birth.innerHTML = `<u>Birth Year</u>: ${characters[index].birth_year}`;
+	gender.innerHTML = `<u>Gender</u>: ${characters[index].gender}`;
+	const race = await getStats(characters[index].species);
+	species.innerHTML = `<u>Race</u>: ${race.name}`;
+	const planet = await getStats(characters[index].homeworld);
+	homeworld.innerHTML = `<u>Homeworld</u>: ${planet.name}`;
+	const movies = await getFilms(characters[index].films);
+	films.innerHTML = `<u>Films</u>: ${movies}`;
+	switchDisplay(modalload, modalcontent, 'none', 'block');
+// When the user clicks on <span> (x), close the modal
+	span.onclick = function() {
+		modal.style.display = "none";
+		switchDisplay(modalload, modalcontent, 'block', 'none');
+	}
+// When the user clicks anywhere outside of the modal, close the modal
+	window.onclick = function(event) {
+		if (event.target == modal) {
+			modal.style.display = "none";			
+			switchDisplay(modalload, modalcontent, 'block', 'none');
+		}
+	}
 }
 
+// Used for fetching "species" and "homeworld" information from characters
+const getStats = async function(url) {
+	// SWAPI hasn't defined "species" nor "homeworld" for some characters, therefore it has to be handled accordingly
+	if (url != '') {
+		try {		
+	        const response = await fetch(url);
+	        return await response.json();
+		} catch (err) {
+	   		console.log('ooooooops', err);		
+		}	
+	} else {
+		return {"name": "unknown"};
+	}
+}
+
+// Used for fetching "films" information from characters
+const getFilms = async function(urls) {
+	let movies = '';
+	try {
+		for (i=0; i<urls.length; i++) {
+			let response = await fetch(urls[i]);
+			let movie = await response.json();
+			if (i < urls.length-1) {
+				movies += movie.title + ', ';
+			} else {
+				movies += movie.title;
+			}
+		} 
+	} catch (err) {
+	   		console.log('ooooooops', err);	
+		}
+	  	return movies;
+}
+
+ //** This function changes the display between "page1" and "page2" pages between "style1" and "style2"
+const switchDisplay = (page1, page2, style1, style2) => {
+	page1.style.display = style1;
+	page2.style.display = style2;
+}
+
+// Creates a list with all the character cards on the main page
 const createList = async function() {
 	characters = await getCharacters();
 	characters = fixOrder(characters);
 	for(i=0; i<characters.length; i++) {
 		const li = document.createElement('div');
-		li.classList.add("card");	
+		li.classList.add("card");
+		li.id = i;
 		const img = document.createElement('img');
 		img.classList.add("picture");
-		const name = document.createElement('div');
-		name.classList.add("title");
+		const cardname = document.createElement('div');
+		cardname.classList.add("title");
 		img.src = getImage(i);
 		li.appendChild(img);
-		name.textContent = characters[i].name;
-		li.appendChild(name);
+		cardname.innerHTML = characters[i].name;
+		li.appendChild(cardname);
 		ul.appendChild(li);
+// When the user clicks on the button, open the modal
+		li.onclick = openModal;
 	}
-	changedisplay();
+	switchDisplay(temppage, mainpage, 'none', 'block');
 }
 
 // FUNCTION CALL
 createList();
-
-// *********************************************************************************************************
-// METHOD 2: Ps: Way too slow as it fetches characters one by one. It has case clauses to handle API errors
-// *********************************************************************************************************
-// // DOM SELECTORS
-// ul = document.getElementById('cardlist');
-
-// // APIs
-// urls = ['https://swapi.co/api/people/'];
-
-// // FUN FUN FUNCTIONS
-// const checkServer = async function() {
-//   try {
-// 	index = await Promise.all(urls.map(async function(url) {
-//         const response = await fetch(url);
-//         return response.json();
-//     }));
-//   } catch (err) {
-//    		console.log('ooooooops', err);	
-//   }
-// }
-
-// const toObject = async function(url) {
-// 	try {	
-// 		const response = await fetch(url);
-// 		return response.json();
-// 	} catch (err) {
-// 	   	console.log('ooooooops', err);	
-// 	}
-// }
-
-// const concatArray = async function() {
-// 	people = [];
-// 	try {
-// 		await checkServer();
-// 		for (i=0; i<=index[0].count; i++) {
-// 			if(i!=16) {	 // CONDITIONAL DUE TO API UNAVAILABLE AT https://swapi.co/api/people/17		
-// 				const character = await toObject('https://swapi.co/api/people/'+(i+1));
-// 				console.log('character', character);
-// 				people = people.concat(character)
-// 			}
-// 		}
-// 		return people;
-// 	} catch (err) {
-// 	   	console.log('ooooooops', err);	
-// 	}
-// }
-
-// const getCharacters = async function() {
-// 	try {		
-// 		return characters = concatArray();
-// 	} catch (err) {
-//    		console.log('ooooooops', err);		
-// 	}
-// }
-
-// // // ** SWAPI has a problem handling https://swapi.co/api/people/17/ returnig error 404,
-// // // 	which can be bypassed with the following function
-// const getImage = (index) => {
-// 	if (index < 16) {
-// 		return 'https://starwars-visualguide.com/assets/img/characters/'+(i+1)+'.jpg';
-// 	} else {
-// 		return 'https://starwars-visualguide.com/assets/img/characters/'+(i+2)+'.jpg';
-// 	}
-// }
-
-// const createList = async function() {
-// 	try {		
-// 		characters = await getCharacters();
-// 		for(i=0; i<characters.length; i++) {
-// 			const li = document.createElement('div');
-// 			li.classList.add("card");	
-// 			const img = document.createElement('img');
-// 			img.classList.add("picture");
-// 			const name = document.createElement('div');
-// 			name.classList.add("title");
-// 			img.src = getImage(i);
-// 			li.appendChild(img);
-// 			name.textContent = characters[i].name;
-// 			li.appendChild(name);
-// 			ul.appendChild(li);
-// 		}	
-// 	} catch (err) {
-//    		console.log('ooooooops', err);		
-// 	}
-// }
-
-// // // FUNCTION CALL
-// createList();
