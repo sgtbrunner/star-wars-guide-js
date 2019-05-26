@@ -10,7 +10,7 @@ body {
 /* LOADS FONT FROM SERVER ROOT DIRECTORY */
 @font-face {
     font-family: 'Star Jedi';
-    src: url(starjedi.ttf);
+    src: url(Starjedi.ttf);
 }
 
 #temp-page {
