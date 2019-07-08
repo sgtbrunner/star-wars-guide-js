@@ -1,4 +1,4 @@
-# Star Wars Guide (Js)
+# Star Wars Guide (Javascript)
 
 A Star Wars Character Guide built with JS (including Async functions and JSON)
 
