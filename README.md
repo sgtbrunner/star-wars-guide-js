@@ -26,4 +26,4 @@ On terminal:
 
 ## Acknowledgement
 
-* **Star Wars API** - https://swapi.co/
+* **Star Wars API** - https://swapi.dev/
