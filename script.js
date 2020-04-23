@@ -10,15 +10,15 @@ const span = document.getElementsByClassName('close')[0];
 
 // APIs
 urls = [
-	'https://swapi.co/api/people/',
-	'https://swapi.co/api/people/?page=2',
-	'https://swapi.co/api/people/?page=3',
-	'https://swapi.co/api/people/?page=4',
-	'https://swapi.co/api/people/?page=5',
-	'https://swapi.co/api/people/?page=6',
-	'https://swapi.co/api/people/?page=7',
-	'https://swapi.co/api/people/?page=8',
-	'https://swapi.co/api/people/?page=9',
+	'https://swapi.dev/api/people/',
+	'https://swapi.dev/api/people/?page=2',
+	'https://swapi.dev/api/people/?page=3',
+	'https://swapi.dev/api/people/?page=4',
+	'https://swapi.dev/api/people/?page=5',
+	'https://swapi.dev/api/people/?page=6',
+	'https://swapi.dev/api/people/?page=7',
+	'https://swapi.dev/api/people/?page=8',
+	'https://swapi.dev/api/people/?page=9',
 ]
 
 // FUN FUN FUNCTIONS
@@ -52,16 +52,6 @@ const concatArray = (array) => {
 		people = people.concat(array[i].results);
 	}
 	return people;
-}
-
-// ** Needed to fix the order which characters are displayed, repositioning Padmé Amidala and Ratts Tyerell in
-// order to match the image database at https://starwars-visualguide.com/assets/img/characters/
-const fixOrder = (array) => {
-	characters.splice(33,0,array.pop());
-	const ratts = characters[72];
-	characters.splice(72,1);
-	characters.splice(45,0,ratts);
-	return characters
 }
 
 // ** This auxiliar function adds obj2 props into obj1 and returns obj1
@@ -168,7 +158,6 @@ const switchDisplay = (page1, page2, style1, style2) => {
 // Creates a list with all the character cards on the main page
 const createList = async function() {
 	characters = await getCharacters();
-	characters = fixOrder(characters);
 	addId(characters);
 	for(i=0; i<characters.length; i++) {
 		const li = document.createElement('div');
