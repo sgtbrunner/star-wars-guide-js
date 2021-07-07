@@ -1,0 +1,29 @@
+{
+  "name": "star-wars-guide-js",
+  "version": "1.0.0",
+  "description": "A Star Wars Character Guide built with Vanilla JS (including Async functions and JSON)",
+  "homepage": "https://sgtbrunner.github.io/star-wars-guide-js/",
+  "main": "index.html",
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  },
+  "scripts": {
+    "start": "npx live-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sgtbrunner/star-wars-guide-js.git"
+  },
+  "keywords": [
+    "star-wars",
+    "javascript",
+    "css",
+    "html"
+  ],
+  "author": "Guilherme Brunner",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sgtbrunner/star-wars-guide-js/issues"
+  }
+}
