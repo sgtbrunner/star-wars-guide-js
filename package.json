@@ -5,11 +5,17 @@
   "homepage": "https://sgtbrunner.github.io/star-wars-guide-js/",
   "main": "index.html",
   "devDependencies": {
-    "live-server": "^1.2.1"
+    "eslint": "^7.30.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "live-server": "^1.2.1",
+    "prettier": "^2.3.2"
   },
   "scripts": {
     "start": "npx live-server",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npx eslint *.js --fix",
+    "format": "prettier --write \"**/*.+(js|jsx|json|css|html)\""
   },
   "repository": {
     "type": "git",
