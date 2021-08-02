@@ -1,182 +1,126 @@
+// CONSTANTS
+const BASE_API_URL = 'https://swapi.dev/api';
+const BASE_IMAGE_URL = 'https://starwars-visualguide.com/assets/img/characters/';
+const BLOCK = 'block';
+const DIV = 'div';
+const NONE = 'none';
+
 // DOM SELECTORS
-const temppage = document.getElementsByTagName('div')[0];
-const mainpage = document.getElementById('main-page');
+const tempPage = document.getElementsByTagName(DIV)[0];
+const mainPage = document.getElementById('main-page');
 const ul = document.getElementById('cardlist');
-const modal = document.getElementById('myModal');
-const modalcontainer = document.getElementsByClassName("grid-container")[0].children;
-const modalload = document.getElementsByClassName("modal-load")[0];
-const modalcontent = document.getElementsByClassName("modal-content")[0];
+const dialog = document.getElementById('myModal');
+const dialogContainer = document.getElementsByClassName('grid-container')[0].children;
+const dialogLoader = document.getElementsByClassName('modal-load')[0];
+const dialogContent = document.getElementsByClassName('modal-content')[0];
 const span = document.getElementsByClassName('close')[0];
 
-// APIs
-urls = [
-	'https://swapi.dev/api/people/',
-	'https://swapi.dev/api/people/?page=2',
-	'https://swapi.dev/api/people/?page=3',
-	'https://swapi.dev/api/people/?page=4',
-	'https://swapi.dev/api/people/?page=5',
-	'https://swapi.dev/api/people/?page=6',
-	'https://swapi.dev/api/people/?page=7',
-	'https://swapi.dev/api/people/?page=8',
-	'https://swapi.dev/api/people/?page=9',
-]
+// GLOBAL VARIABLES
+const characters = [];
 
-// FUN FUN FUNCTIONS
+// FUNCTIONS
+const capitalizeFirstLetter = (string) => string[0].toUpperCase() + string.slice(1);
 
-// Gets all the characters from different pages and concat them in a single array
-const getCharacters = async function() {
-	try {
-		await getData();			
-		return characters = concatArray(pages);
-	} catch (err) {
-   		console.log('ooooooops', err);		
-	}
-}
+const getImage = (index) =>
+  typeof index === 'number' || (typeof index === 'string' && Number(index))
+    ? `${BASE_IMAGE_URL}${Number(index) < 16 ? Number(index) + 1 : Number(index) + 2}.jpg`
+    : null;
 
-// Fetches all the character data information from API server and store it in pages as it's defined on SWAPI
-const getData = async function() {
-  try {
-	pages = await Promise.all(urls.map(async function(url) {
-        const response = await fetch(url);
-        return response.json();
-    }));
-  } catch (err) {
-   		console.log('ooooooops', err);	
+const getCharactersWithAddedId = async ({ url, collection }) => {
+  await fetch(url || `${BASE_API_URL}/people`)
+    .then((response) => response.json())
+    .then(async (data) => {
+      collection.push(...data.results);
+      if (data.next) await getCharactersWithAddedId({ url: data.next, collection });
+    });
+
+  collection.forEach((character, index) => (character.id = index));
+};
+
+const getStats = async (url) => {
+  if (url.toString()) {
+    try {
+      const response = await fetch(url);
+      return response.json();
+    } catch (err) {
+      console.log('ooooooops', err);
+    }
+  } else {
+    return { name: 'unknown' };
   }
-}
+};
 
-// Function for concating information in an array
-const concatArray = (array) => {
-	let people = [];
-	for( i=0 ; i<array.length ; i++ ) {
-		people = people.concat(array[i].results);
-	}
-	return people;
-}
+const getFilms = async (urls) => {
+  try {
+    const movies = [];
+    for (let i = 0; i < urls.length; i++) {
+      const response = await fetch(urls[i]);
+      const movie = await response.json();
+      movies.push(movie.title);
+    }
+    return movies.join(', ');
+  } catch (err) {
+    console.log('ooooooops', err);
+  }
+};
 
-// ** This auxiliar function adds obj2 props into obj1 and returns obj1
-const augment = (obj1, obj2) => {
-	let prop;
-	for(prop in obj2) {
-		if (obj2.hasOwnProperty(prop) && !obj1[prop]) {
-			obj1[prop] = obj2[prop];
-		}
-	}
-	return obj1;
-}
+const openDialog = async (event) => {
+  dialog.style.display = BLOCK;
+  const index = parseInt(event.target.id);
+  const [name, portrait, birth, gender, species, homeworld, films] = [...dialogContainer];
 
-// ** This function adds ID property to every object without ID inside a given array of objects
-const addId = (array) => {
-	array.map((item, index) => {
-			const newprop = {id: index}
-			return item = augment(item, newprop);
-	})
-}
+  name.innerHTML = characters[index].name;
+  portrait.src = getImage(index);
+  birth.innerHTML = `<u>Birth Year</u>: ${characters[index].birth_year}`;
+  gender.innerHTML = `<u>Gender</u>: ${capitalizeFirstLetter(characters[index].gender)}`;
+  const race = await getStats(characters[index].species);
+  species.innerHTML = `<u>Species</u>: ${race.name}`;
+  const planet = await getStats(characters[index].homeworld);
+  homeworld.innerHTML = `<u>Homeworld</u>: ${planet.name}`;
+  const movies = await getFilms(characters[index].films);
+  films.innerHTML = `<u>Films</u>: ${movies}`;
+  switchDisplay(dialogLoader, dialogContent, NONE, BLOCK);
 
-// ** SWAPI has an issue handling https://swapi.co/api/people/17/ returnig error 404,
-// 	which can be bypassed with the following function
-const getImage = (index) => {
-	if (index < 16) {
-		return `https://starwars-visualguide.com/assets/img/characters/${(index+1)}.jpg`;
-	} else {
-		return `https://starwars-visualguide.com/assets/img/characters/${(index+2)}.jpg`;
-	}
-}
+  span.onclick = () => {
+    dialog.style.display = NONE;
+    switchDisplay(dialogLoader, dialogContent, BLOCK, NONE);
+  };
 
-// Used for fetching "species" and "homeworld" information from characters
-const getStats = async function(url) {
-	// SWAPI hasn't defined "species" nor "homeworld" for some characters, therefore it has to be handled accordingly
-	if (url.toString()!=='' && url.toString()!==[] && url.toString()!=={}) {
-		try {		
-	        const response = await fetch(url);
-	        return await response.json();
-		} catch (err) {
-	   		console.log('ooooooops', err);		
-		}	
-	} else {
-		return {"name": "unknown"};
-	}
-}
+  window.onclick = (event) => {
+    if (event.target == dialog) {
+      dialog.style.display = NONE;
+      switchDisplay(dialogLoader, dialogContent, BLOCK, NONE);
+    }
+  };
+};
 
-// Used for fetching "films" information from characters
-const getFilms = async function(urls) {
-	let movies = '';
-	try {
-		for (i=0; i<urls.length; i++) {
-			let response = await fetch(urls[i]);
-			let movie = await response.json();
-			if (i < urls.length-1) {
-				movies += movie.title + ', ';
-			} else {
-				movies += movie.title;
-			}
-		} 
-	} catch (err) {
-	   		console.log('ooooooops', err);	
-		}
-	  	return movies;
-}
-
-// Creates modal with character information onclick
-const openModal = async function(event) {
-	modal.style.display = "block";
-	const index = parseInt(event.path[1].id);
-	const [name, portrait, birth, gender, species, homeworld, films ] = 
-		  [modalcontainer[0], modalcontainer[1], modalcontainer[2], modalcontainer[3], modalcontainer[4], modalcontainer[5], modalcontainer[6]];
-	name.innerHTML = characters[index].name;
-	portrait.src = getImage(index);
-	birth.innerHTML = `<u>Birth Year</u>: ${characters[index].birth_year}`;
-	gender.innerHTML = `<u>Gender</u>: ${characters[index].gender}`;
-	const race = await getStats(characters[index].species);
-	species.innerHTML = `<u>Species</u>: ${race.name}`;
-	const planet = await getStats(characters[index].homeworld);
-	homeworld.innerHTML = `<u>Homeworld</u>: ${planet.name}`;
-	const movies = await getFilms(characters[index].films);
-	films.innerHTML = `<u>Films</u>: ${movies}`;
-	switchDisplay(modalload, modalcontent, 'none', 'block');
-// When the user clicks on <span> (x), close the modal
-	span.onclick = function() {
-		modal.style.display = "none";
-		switchDisplay(modalload, modalcontent, 'block', 'none');
-	}
-// When the user clicks anywhere outside of the modal, close the modal
-	window.onclick = function(event) {
-		if (event.target == modal) {
-			modal.style.display = "none";			
-			switchDisplay(modalload, modalcontent, 'block', 'none');
-		}
-	}
-}
-
-
- //** This function changes the display between "page1" and "page2" pages between "style1" and "style2"
 const switchDisplay = (page1, page2, style1, style2) => {
-	page1.style.display = style1;
-	page2.style.display = style2;
-}
+  page1.style.display = style1;
+  page2.style.display = style2;
+};
 
-// Creates a list with all the character cards on the main page
-const createList = async function() {
-	characters = await getCharacters();
-	addId(characters);
-	for(i=0; i<characters.length; i++) {
-		const li = document.createElement('div');
-		li.classList.add("card");
-		li.id = characters[i].id;
-		const img = document.createElement('img');
-		img.classList.add("picture");
-		const cardname = document.createElement('div');
-		cardname.classList.add("title");
-		img.src = getImage(characters[i].id);
-		li.appendChild(img);
-		cardname.innerHTML = characters[i].name;
-		li.appendChild(cardname);
-		ul.appendChild(li);
-// When the user clicks on the button, open the modal
-		li.onclick = openModal;
-	}
-	switchDisplay(temppage, mainpage, 'none', 'block');
-}
+const loadApp = async function () {
+  await getCharactersWithAddedId({ collection: characters });
+  characters.forEach((character) => {
+    const li = document.createElement(DIV);
+    li.classList.add('card');
+    li.id = character.id;
+    const img = document.createElement('img');
+    img.id = character.id;
+    img.classList.add('picture');
+    const cardname = document.createElement(DIV);
+    cardname.classList.add('title');
+    img.src = getImage(character.id);
+    li.appendChild(img);
+    cardname.innerHTML = character.name;
+    li.appendChild(cardname);
+    ul.appendChild(li);
 
-// FUNCTION CALL
-createList();
+    li.onclick = openDialog;
+  });
+
+  switchDisplay(tempPage, mainPage, NONE, BLOCK);
+};
+
+// LOAD APP
+loadApp();
