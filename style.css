@@ -10,7 +10,7 @@ body {
 /* LOADS FONT FROM SERVER ROOT DIRECTORY */
 @font-face {
     font-family: 'Star Jedi';
-    src: url(Starjedi.ttf);
+    src: url('/assets/fonts/Starjedi.ttf');
 }
 
 #temp-page {
@@ -30,7 +30,7 @@ body {
 }
 
 #flex-container {
-	background-image: url("img/bg.jpg");
+	background-image: url('/assets//img/bg.jpg');
 	background-size: repeat;
   padding: 15px 0;
 }
