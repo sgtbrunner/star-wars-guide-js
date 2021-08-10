@@ -1,37 +1,37 @@
 html {
-	scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 
 body {
-	margin: auto 0;
-    font-family: Arial;
+  margin: auto 0;
+  font-family: Arial;
 }
 
 /* LOADS FONT FROM SERVER ROOT DIRECTORY */
 @font-face {
-    font-family: 'Star Jedi';
-    src: url('/assets/fonts/Starjedi.ttf');
+  font-family: 'Star Jedi';
+  src: url('/assets/fonts/Starjedi.ttf');
 }
 
 #temp-page {
-    max-width: 100%;
-    max-height: 100vh;
-    height: 100%;
+  max-width: 100%;
+  max-height: 100vh;
+  height: 100%;
 }
 
 #main-page {
-	display: none;
+  display: none;
 }
 
 #cover-image {
-    max-width: 100%;
-    max-height: 100vh;
-    height: 100%;
+  max-width: 100%;
+  max-height: 100vh;
+  height: 100%;
 }
 
 #flex-container {
-	background-image: url('/assets//img/bg.jpg');
-	background-size: repeat;
+  background-image: url('/assets//img/bg.jpg');
+  background-size: repeat;
   padding: 15px 0;
 }
 
@@ -45,44 +45,68 @@ body {
 }
 
 .page-loader {
-	text-align: center;
-	vertical-align: center;
-	font-family: 'Star Jedi';
-	font-size: 10vh;
-	padding: 25vh 10vh;
+  text-align: center;
+  vertical-align: center;
+  font-family: 'Star Jedi';
+  font-size: 10vh;
+  padding: 25vh 10vh;
 }
 
 /*SETS FADE IN & FADE OUT ANIMATION - EXTRACTED FROM THE WEB*/
 @keyframes flickerAnimation {
-  0%   { opacity:1; }
-  50%  { opacity:0; }
-  100% { opacity:1; }
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
-@-o-keyframes flickerAnimation{
-  0%   { opacity:1; }
-  50%  { opacity:0; }
-  100% { opacity:1; }
+@-o-keyframes flickerAnimation {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
-@-moz-keyframes flickerAnimation{
-  0%   { opacity:1; }
-  50%  { opacity:0; }
-  100% { opacity:1; }
+@-moz-keyframes flickerAnimation {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
-@-webkit-keyframes flickerAnimation{
-  0%   { opacity:1; }
-  50%  { opacity:0; }
-  100% { opacity:1; }
+@-webkit-keyframes flickerAnimation {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 .animate-flicker {
-   -webkit-animation: flickerAnimation 1s infinite;
-   -moz-animation: flickerAnimation 1s infinite;
-   -o-animation: flickerAnimation 1s infinite;
-    animation: flickerAnimation 1s infinite;
+  -webkit-animation: flickerAnimation 1s infinite;
+  -moz-animation: flickerAnimation 1s infinite;
+  -o-animation: flickerAnimation 1s infinite;
+  animation: flickerAnimation 1s infinite;
 }
 
 .cover-container {
-	z-index: 1;
-	background-color: black;
+  z-index: 1;
+  background-color: black;
   text-align: center;
   border-bottom: 2px solid white;
   max-width: 100%;
@@ -100,23 +124,23 @@ body {
 }
 
 .card:hover {
-	transform: scale(1.05);
-    box-shadow:rgba(255,255,255,2) 0px 5px 15px, inset rgba(255,255,255,2) 0px -10px 20px;
-	cursor: pointer;
+  transform: scale(1.05);
+  box-shadow: rgba(255, 255, 255, 2) 0px 5px 15px, inset rgba(255, 255, 255, 2) 0px -10px 20px;
+  cursor: pointer;
 }
 
 .picture {
-	width: 100%;
-	height: auto;
+  width: 100%;
+  height: auto;
 }
 
 .title {
-	background-color: white;
-	padding: 5px;
-	text-align: center;
-	font-family: Verdana;
-	font-size: 15px;
-	font-weight: bold;
+  background-color: white;
+  padding: 5px;
+  text-align: center;
+  font-family: Verdana;
+  font-size: 15px;
+  font-weight: bold;
 }
 
 /* The Modal (background) */
@@ -129,18 +153,24 @@ body {
   width: 100%; /* Full width */
   height: 100%; /* Full height */
   overflow: hidden; /* Disable scroll*/
-  background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+  background-color: rgba(0, 0, 0, 0.8); /* Black w/ opacity */
 }
 
 /* Modal Content */
-.modal-content, .modal-load {
+.modal-content,
+.modal-load {
   background-color: #fefefe;
   margin: 15vh auto;
   padding: 4% 4%;
   border: 3px solid #888;
   border-radius: 20px;
   width: 700px;
-  background: linear-gradient(to right, rgba(239,239,239,100%) 0%,rgba(219,219,219,100%) 50%,rgba(239,239,239,100%) 100%);
+  background: linear-gradient(
+    to right,
+    rgba(239, 239, 239, 100%) 0%,
+    rgba(219, 219, 219, 100%) 50%,
+    rgba(239, 239, 239, 100%) 100%
+  );
 }
 
 .modal-load {
@@ -155,12 +185,15 @@ body {
   height: 15vw;
   animation: spin 2s linear infinite;
   display: inline-block;
-
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .modal-content {
@@ -224,44 +257,46 @@ body {
 
 /*** Handles Modal settings when screen width decreases to less than 735px */
 @media only screen and (max-width: 735px) {
-    .modal-content, .modal-load {
-      width: 95vw;
-    }
+  .modal-content,
+  .modal-load {
+    width: 95vw;
+  }
 
-    .stats {
-      justify-self: start;
-      font-size: 2.8vw;
-    }
+  .stats {
+    justify-self: start;
+    font-size: 2.8vw;
+  }
 }
 /*** Handles Modal settings when screen width decreases to less than 516px */
 @media only screen and (max-width: 516px) {
-    .modal-content, .modal-load {
-      width: 70vh;
-      height: auto;
-      margin: 5vh auto;
-    }
-
-    .grid-container {
-      grid-template-columns: auto;
-      grid-template-rows: auto;
-      padding: 10px;
-      justify-items: center;
-      grid-row-gap: 5px;
+  .modal-content,
+  .modal-load {
+    width: 70vh;
+    height: auto;
+    margin: 5vh auto;
   }
 
-    .char-name {
-      font-size: 6vw;
-      margin-bottom: 2vw
-    }
+  .grid-container {
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+    padding: 10px;
+    justify-items: center;
+    grid-row-gap: 5px;
+  }
 
-    .portrait {
-      grid-row: 2 / span 7;
-      width: 60%;
-      margin-bottom: 2vw;
-    }
+  .char-name {
+    font-size: 6vw;
+    margin-bottom: 2vw;
+  }
 
-    .stats {
-      justify-self: start;
-      font-size: 2.1vh;
-    }
+  .portrait {
+    grid-row: 2 / span 7;
+    width: 60%;
+    margin-bottom: 2vw;
+  }
+
+  .stats {
+    justify-self: start;
+    font-size: 2.1vh;
+  }
 }
